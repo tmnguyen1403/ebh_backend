@@ -43,8 +43,8 @@ const createUser = async (req, res) => {
 		console.log("new user:", new_user)
 		res.render("confirm", {type: "user", name: data.username})
 	} catch(error){
-		console.log("error when create user", error)
-		res.send("error when create user")
+		console.log("ERROR CREATE USER",error.message)
+		res.send(`error: ${error.message}`)
 	}
 }
 
