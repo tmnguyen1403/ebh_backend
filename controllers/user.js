@@ -1,4 +1,5 @@
 const User = require("../models/user")
+const Community = require("../models/community")
 
 exports.getAllUser = (req, res) => {
 	User.find({})
@@ -11,27 +12,39 @@ exports.getAllUser = (req, res) => {
 		})
 }
 
+exports.getCreateUserView = (req, res) => {
+	res.render("createUser")
+}
 exports.getUser = (req, res) => {
 
 }
 
-exports.saveUser = (req, res) => {
+exports.createUser = (req, res) => {
 	const data = {
 		username: req.body.username,
 		password: req.body.password,
 		coordinator: req.body.coordinator,
 		phone: req.body.phone,
-		communities: req.body.communities,
+		communities: [],
+		admin: req.body.admin,
 	}
-	User.create(data)
-		.then(record => {
-			console.log(record)
-			res.send("Saved user")
+	const communities = req.body.communities
+	Community.find({name: {$in: communities}})
+		.then(records => {
+			data.communities = records
+			console.log("User data", data)
+			User.create(data)
+				.then(record => {
+					console.log(record)
+					res.render("confirm", {type: "user", name: data.username})
+				})
+				.catch(error => {
+					console.log("error when create user", error)
+					res.send("error when create user")
+				})
 		})
 		.catch(error => {
-			console.log("error")
-		})
-		.then(() => {
-			console.log(`Save user successfully`)
+			console.log("Error when find communities")
+			res.send("Error when find communities while creating user")
 		})
 }

@@ -1,20 +1,27 @@
 const express = require("express"),
 app = express(),
-port = process.env.PORT || 3000
-mongoose = require("mongoose")
+db = require("./db_connect");
+db.connect()
 
-//connect to mongo db
-const dbURL = "mongodb://localhost:27017",
-dbName = "education_base_housing";
-mongoose.connect(dbURL + dbName, 	{useNewUrlParser: true})
-
-const db = mongoose.connection
+//controller
+const userController = require("./controllers/user")
+const communityController = require("./controllers/community")
+//port
+app.set("port", process.env.PORT || 3000)
+app.set("view engine", "ejs")
+//middleware
+app.use(express.urlencoded({extended: false}))
+app.use(express.json())
 
 //routes
 app.get("/", (req, res) => {
 	res.send("Welcome to Education Base Housing")
 })
+app.get("/user/create", userController.getCreateUserView)
+app.post("/user/create", userController.createUser)
+app.get("/community/create", communityController.getCreateCommunityView)
+app.post("/community/create", communityController.createCommunity)
 
-app.listen(port, () => {
-	console.log(`Listening at port ${port}`)
+app.listen(app.get("port"), () => {
+	console.log(`Listening at port ${app.get("port")}`)
 })
