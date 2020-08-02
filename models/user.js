@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const ObjectId = mongoose.Schema.Types.ObjectId
 const userSchema = mongoose.Schema({
 	username: {
 		type: String,
@@ -24,7 +25,9 @@ const userSchema = mongoose.Schema({
 		max: 3,
 		required: true,
 	},
-	communities: [{type: mongoose.Schema.Types.ObjectId, ref: "Community"}]
+	communities: [{type: ObjectId, ref: "Community"}],
+	events: [{type: ObjectId, ref: "Event"}],
+	flyers: [{type: ObjectId, ref: "Flyer"}], 
 })
 
 module.exports = mongoose.model("User", userSchema)
