@@ -12,11 +12,20 @@ exports.getAllUser = (req, res) => {
 		})
 }
 
-exports.getCreateUserView = (req, res) => {
+exports.getCreateView = (req, res) => {
 	res.render("createUser")
+}
+
+exports.getLoginView = (req, res) => {
+	res.render("login")
 }
 exports.getUser = (req, res) => {
 
+}
+
+exports.login = (req, res) => {
+	//need validate user
+	res.send("login successfully")
 }
 
 exports.createUser = (req, res) => {

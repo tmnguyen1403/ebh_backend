@@ -17,9 +17,12 @@ app.use(express.json())
 app.get("/", (req, res) => {
 	res.send("Welcome to Education Base Housing")
 })
-app.get("/user/create", userController.getCreateUserView)
+app.get("/user/login", userController.getLoginView)
+app.get("/user/create", userController.getCreateView)
+app.get("/community/create", communityController.getCreateView)
+//post
+app.post("/user/login", userController.login)
 app.post("/user/create", userController.createUser)
-app.get("/community/create", communityController.getCreateCommunityView)
 app.post("/community/create", communityController.createCommunity)
 
 app.listen(app.get("port"), () => {

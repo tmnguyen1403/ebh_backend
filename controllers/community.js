@@ -1,6 +1,6 @@
 const Community = require("../models/community")
 
-exports.getCreateCommunityView = (req, res) => {
+exports.getCreateView = (req, res) => {
 	res.render("createCommunity")
 }
 
