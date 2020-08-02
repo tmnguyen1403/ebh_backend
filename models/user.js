@@ -18,6 +18,12 @@ const userSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
+	admin: {
+		type: Number,
+		min: 0,
+		max: 3,
+		required: true,
+	},
 	communities: [{type: mongoose.Schema.Types.ObjectId, ref: "Community"}]
 })
 
