@@ -1,11 +1,11 @@
 const Event = require("../models/event")
 const User = require("../models/user")
 
-const getCreateView = (req, res) => {
-	res.render("new_event")
+const createView = (req, res) => {
+	res.render("event/create")
 }
 
-const createEvent = async (req, res) => {
+const create = async (req, res) => {
 	const body = req.body
 	const data = {
 		name: body.name,
@@ -22,6 +22,10 @@ const createEvent = async (req, res) => {
 		data.creator = creator._id
 		const record = await Event.create(data)
 		console.log("Create new event successfully: ", record)
+		//add event to the creator record
+		creator.events.push(record._id)
+		const result = await creator.save()
+		console.log("Save new event to creator successfully: ", result)
 		res.send("Create new event successfully")
 	} catch (error) {
 		console.log("ERROR CREATE EVENT: ", error.message)
@@ -30,6 +34,6 @@ const createEvent = async (req, res) => {
 }
 
 module.exports = {
-	getCreateView,
-	createEvent
+	createView,
+	create
 }

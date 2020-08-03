@@ -1,8 +1,13 @@
 const express = require("express"),
 app = express(),
+router = express.Router(),
 db = require("./db_connect");
 db.connect()
-
+//interpret post request as put middleware
+const methodOverride = require("method-override")
+router.use(methodOverride("_method", {
+	methods: ["POST", "GET"]
+}))
 //controller
 const userController = require("./controllers/user")
 const communityController = require("./controllers/community")
@@ -14,20 +19,21 @@ app.set("view engine", "ejs")
 //middleware
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
-
+app.use("/", router)
 //routes
-app.get("/", (req, res) => {
+router.get("/", (req, res) => {
 	res.send("Welcome to Education Base Housing")
 })
-app.get("/user/login", userController.getLoginView)
-app.get("/user/create", userController.getCreateView)
-app.get("/community/create", communityController.getCreateView)
-app.get("/event/create", eventController.getCreateView)
+router.get("/user/login", userController.loginView)
+router.get("/user/create", userController.createView)
+router.get("/user/:id", userController.show, userController.showView)
+router.get("/community/create", communityController.createView)
+router.get("/event/create", eventController.createView)
 //post
-app.post("/user/login", userController.login)
-app.post("/user/create", userController.createUser)
-app.post("/community/create", communityController.createCommunity)
-app.post("/event/create", eventController.createEvent)
+router.post("/user/login", userController.login)
+router.post("/user/create", userController.create)
+router.post("/community/create", communityController.create)
+router.post("/event/create", eventController.create)
 //middleware
 app.use(errorController.notFoundError)
 app.use(errorController.internalServerError)

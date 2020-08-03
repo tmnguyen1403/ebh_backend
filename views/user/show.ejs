@@ -1,0 +1,22 @@
+<h1>User Info</h1>
+<table>
+	<tr>
+		<th>Username</th>
+		<td><%= user.username %></td>
+	</tr>
+	<tr>
+		<th>Password</th>
+		<td><%= user.password %></td>
+	</tr>
+	<tr>
+		<th>Coordinator</th>
+		<td><%= user.coordinator %></td>
+	</tr>
+	<tr>
+		<th>Communities</th>
+		<% user.communities.forEach( c => { %>
+			<td> <%= c.name %> |</td>
+		<%}) %>
+	</tr>
+
+</table>

@@ -1,10 +1,10 @@
 const Community = require("../models/community")
 
-const getCreateView = (req, res) => {
-	res.render("createCommunity")
+const createView = (req, res) => {
+	res.render("community/create")
 }
 
-const createCommunity = (req, res) => {
+const create = (req, res) => {
 	const data = {
 		name: req.body.name,
 		coordinators: [],
@@ -24,6 +24,6 @@ const createCommunity = (req, res) => {
 }
 
 module.exports = {
-	getCreateView,
-	createCommunity,
+	createView,
+	create,
 }

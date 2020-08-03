@@ -12,12 +12,12 @@ const getAllUser = (req, res) => {
 		})
 }
 
-const getCreateView = (req, res) => {
-	res.render("createUser")
+const createView = (req, res) => {
+	res.render("user/create")
 }
 
-const getLoginView = (req, res) => {
-	res.render("login")
+const loginView = (req, res) => {
+	res.render("user/login")
 }
 
 
@@ -26,7 +26,26 @@ const login = (req, res) => {
 	res.send("login successfully")
 }
 
-const createUser = async (req, res) => {
+const show = (req, res, next) => {
+	let userId = req.params.id
+	console.log("User id", userId)
+	User.findById(userId).populate('communities')
+		.then(user => {
+			res.locals.user = user
+			next()
+		})
+		.catch(error => {
+			console.log(`Error fetching user by ID: ${error.message}`)
+			next(error)
+		})
+}
+
+const showView = (req, res) => {
+	console.log("Show view", res.locals.user)
+	res.render("user/show")
+}
+
+const create = async (req, res) => {
 	const data = {
 		username: req.body.username,
 		password: req.body.password,
@@ -50,8 +69,10 @@ const createUser = async (req, res) => {
 
 module.exports = {
 	getAllUser,
-	getCreateView,
-	getLoginView,
+	createView,
+	loginView,
 	login,
-	createUser
+	create,
+	show,
+	showView,
 }
