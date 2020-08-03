@@ -8,7 +8,7 @@ router.get("/login", userController.loginView)
 router.post("/login", userController.authenticate, userController.redirectView)
 router.get("/:id", userController.show, userController.showView)
 router.get("/:id/update", userController.show, userController.updateView)
-router.put("/:id/update", userController.update, userController.redirectView)
+router.put("/:id/update", userController.update, userController.showView)
 router.delete("/:id/delete", userController.deleteA)
 
 module.exports = router

@@ -26,10 +26,18 @@ const create = async (req, res) => {
 		creator.events.push(record._id)
 		const result = await creator.save()
 		console.log("Save new event to creator successfully: ", result)
-		res.send("Create new event successfully")
+		//res.send("Create new event successfully")
+		res.json({
+			success: true,
+			event: record,
+		})
 	} catch (error) {
 		console.log("ERROR CREATE EVENT: ", error.message)
-		res.render("501")
+		res.json({
+			success: false,
+			error: error.message,
+		})
+		//res.render("501")
 	}
 }
 

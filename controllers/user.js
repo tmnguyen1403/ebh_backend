@@ -1,6 +1,9 @@
 const User = require("../models/user")
 const Community = require("../models/community")
 
+//JWT API: secure login
+const jsonWebToken = require("jsonwebtoken")
+
 const getAllUser = (req, res) => {
 	User.find({})
 		.then(records => {
@@ -11,6 +14,7 @@ const getAllUser = (req, res) => {
 			console.log(error)
 		})
 }
+
 const getAdmins = async(req, res) => {
 	try {
 		let admins = await User.find({admin: 2})
@@ -38,8 +42,8 @@ const loginView = (req, res) => {
 const authenticate = async (req, res, next) => {
 	//need validate user
 	try {
-		console.log("Authenticate: ", req.body)
-		let user = await User.findOne({username: req.body.username})
+		console.log("Authenticate: ", req.url)
+		let user = await User.findOne({username: req.body.username}).populate("communities")
 		if (user === null) {
 			console.log("Error: User does not exist")
 			throw new Error("User does not exist")
@@ -55,6 +59,30 @@ const authenticate = async (req, res, next) => {
 	} catch(error) {
 		console.log("Authenticate Error: ", error.message)
 		next(error.message)
+	}
+}
+
+const apiAuthenticate = (req, res, next) => {
+	let user = res.locals.user
+	if (user) {
+		let oneDay = new Date().setDate(new Date().getDate() + 1)
+		let signedToken = jsonWebToken.sign(
+			{
+				data: user._id,
+				exp: oneDay
+			},
+			"secret_encoding_passphrase"
+		)
+		res.json({
+			success: true,
+			token: signedToken,
+			user: user,
+		})
+	} else {
+		res.json({
+			success: false,
+			message: "Could not authenticate user",
+		})
 	}
 }
 
@@ -105,7 +133,7 @@ const update = async (req, res, next) => {
 			userParams.communities = communities
 			let user = await User.findByIdAndUpdate(userId,
 				{$set: userParams})
-			res.locals.redirect = `/user/${userId}`
+			user.communities = communities
 			res.locals.user = user
 			next()
 		} catch(error) {
@@ -162,7 +190,41 @@ const deleteA = (req, res, next) => {
 		})
 }
 
-//use this for request
+//JsonWebToken
+const verifyJWT = (req, res, next) => {
+	let token = req.headers.token
+	if (token) {
+		jsonWebToken.verify(
+			token,
+			"secret_encoding_passphrase",
+			(errors, payload) => {
+				if (payload) {
+					User.findById(payload.data).then(user => {
+						if (user) {
+							next ()
+						} else {
+							res.status(400).json({
+								error: true,
+								message: "No User Account Found"
+							})
+						}
+					})
+				} else {
+				res.status(400).json({
+					error: true,
+					message: "Cannot verify API token"
+				})
+				next()
+			}
+		})
+		} else {
+		res.status(400).json({
+			error: true,
+			message: "Please provide token"
+		})
+	}
+}
+//use this for validating request
 const {body, validationResult} = require("express-validator")
 
 const validate = (req, res, next) => {
@@ -197,6 +259,8 @@ module.exports = {
 	getAdmins,
 	validate,
 	authenticate,
+	apiAuthenticate,
+	verifyJWT,
 	create,
 	show,
 	update,

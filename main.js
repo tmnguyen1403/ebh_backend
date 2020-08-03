@@ -5,25 +5,12 @@ db = require("./db_connect");
 db.connect()
 //middlwares
 
-//interpret post request as put middleware
+//interpret post request as PUT, DELETE middleware
+//
 const methodOverride = require("method-override")
-router.use(methodOverride("_method", {
+app.use(methodOverride("_method", {
 	methods: ["POST", "GET"]
 }))
-//cookie
-const expressSession = require("express-session"),
-cookieParser = require("cookie-parser"),
-connectFlash = require("connect-flash")
-router.use(cookieParser("secret_passcode"))
-router.use(expressSession({
-	secret: "secret_passcode",
-	cookie: {
-		maxAge: 4000000
-	},
-	resave: false,
-	saveUninitialized: false,
-}))
-router.use(connectFlash())
 
 //port
 app.set("port", process.env.PORT || 3000)
