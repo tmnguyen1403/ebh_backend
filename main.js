@@ -3,6 +3,8 @@ app = express(),
 router = express.Router(),
 db = require("./db_connect");
 db.connect()
+//middlwares
+
 //interpret post request as put middleware
 const methodOverride = require("method-override")
 router.use(methodOverride("_method", {
@@ -31,10 +33,13 @@ const eventController = require("./controllers/event")
 app.set("port", process.env.PORT || 3000)
 app.set("view engine", "ejs")
 //middleware
-app.use(express.urlencoded({extended: false}))
-app.use(express.json())
+//Note: order matters
 app.use("/", router)
+router.use(express.urlencoded({extended: false}))
+router.use(express.json())
 //routes
+
+
 router.get("/", (req, res) => {
 	res.send("Welcome to Education Base Housing")
 })
@@ -49,7 +54,7 @@ router.get("/event/:id", eventController.show, eventController.showView)
 router.get("/event/:id/update", eventController.show, eventController.updateView)
 //post
 router.post("/user/login", userController.authenticate, userController.redirectView)
-router.post("/user/create", userController.create)
+router.post("/user/create", userController.validate ,userController.create)
 router.put("/user/:id/update", userController.update, userController.redirectView)
 router.delete("/user/:id/delete", userController.deleteA)
 

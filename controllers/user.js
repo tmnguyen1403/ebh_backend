@@ -141,8 +141,30 @@ const deleteA = (req, res, next) => {
 		})
 }
 
+const {body, validationResult} = require("express-validator")
+
+const validate = (req, res, next) => {
+		console.log("Validate request")
+		body("username", "Username cannot be empty").notEmpty()
+		body("email").normalizeEmail({
+			all_lowercase: true
+		}).trim();
+		body("email", "Email is invalid").isEmail()
+		body("password", "Password cannot be empty").notEmpty()
+		console.log("Validate request 2")
+		const errors = validationResult(req)
+		if (!errors.isEmpty()) {
+			console.log("Validation Error: ", errors.array())
+			return res.status(400).json({errors: errors.array()})
+		} else {
+			console.log("Pass validate")
+			next()
+		}
+}
+
 module.exports = {
 	getAllUser,
+	validate,
 	authenticate,
 	create,
 	show,
