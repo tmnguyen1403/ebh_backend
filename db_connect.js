@@ -4,7 +4,7 @@ module.exports.connect = () => {
 	dbName = "education_base_housing";
 
 	mongoose.connect(dbURL + dbName,
-		{useNewUrlParser: true},
+		{useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
 		(error, result) =>
 		{
 			if (error)

@@ -30,7 +30,8 @@ const authenticate = async (req, res, next) => {
 			res.send("User does not exist")
 			return
 		}
-		if (user.password === req.body.password) {
+		let passwordMatch = await user.passwordComparison(req.body.password)
+		if (passwordMatch) {
 			res.locals.redirect = `/user/${user._id}`
 			res.locals.user = user
 			next()

@@ -18,7 +18,7 @@ router.use(expressSession({
 	cookie: {
 		maxAge: 4000000
 	},
-	reqsave: false,
+	resave: false,
 	saveUninitialized: false,
 }))
 router.use(connectFlash())
