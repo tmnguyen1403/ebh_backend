@@ -37,10 +37,12 @@ router.get("/event/:id/update", eventController.show, eventController.updateView
 router.post("/user/login", userController.login)
 router.post("/user/create", userController.create)
 router.put("/user/:id/update", userController.update, userController.redirectView)
+router.delete("/user/:id/delete", userController.deleteA)
 
 router.post("/community/create", communityController.create)
 router.post("/event/create", eventController.create)
 router.put("/event/:id/update", eventController.update, eventController.redirectView)
+router.delete("/event/:id/delete", eventController.deleteA)
 
 //middleware
 app.use(errorController.notFoundError)

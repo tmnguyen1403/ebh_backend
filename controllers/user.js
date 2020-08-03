@@ -107,12 +107,26 @@ const create = async (req, res) => {
 	}
 }
 
+const deleteA = (req, res, next) => {
+	const userId = req.params.id
+	User.findByIdAndRemove(userId)
+		.then(() => {
+			console.log("DELETE USER OK")
+			res.send("DELETE USER OK")
+		})
+		.catch(error => {
+			console.log("DELETE USER ERROR", error.message)
+			res.render("501")
+		})
+}
+
 module.exports = {
 	getAllUser,
 	login,
 	create,
 	show,
 	update,
+	deleteA,
 	createView,
 	loginView,
 	showView,
