@@ -37,9 +37,9 @@ app.use("/", router)
 //routes
 
 //middleware
-const errorController = require("./controllers/error")
-app.use(errorController.notFoundError)
-app.use(errorController.internalServerError)
+//const errorController = require("./controllers/error")
+//app.use(errorController.notFoundError)
+//app.use(errorController.internalServerError)
 app.listen(app.get("port"), () => {
 	console.log(`Listening at port ${app.get("port")}`)
 })

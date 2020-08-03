@@ -1,6 +1,7 @@
 const router = require("express").Router(),
 userController = require("../controllers/user")
 
+router.get("/admins", userController.getAdmins)
 router.get("/create", userController.createView)
 router.post("/create", userController.validate ,userController.create)
 router.get("/login", userController.loginView)

@@ -11,6 +11,20 @@ const getAllUser = (req, res) => {
 			console.log(error)
 		})
 }
+const getAdmins = async(req, res) => {
+	try {
+		let admins = await User.find({admin: 2})
+		if (admins === null)
+			throw new Error("No admin record in database")
+		if (req.query.format === "json")
+			res.json(admins)
+		else
+			res.send("Found admins")
+	} catch (error) {
+		console.log("ERROR FIND ADMINS: ", error.message)
+		res.send("ERROR FIND ADMINS: ")
+	}
+}
 
 const createView = (req, res) => {
 	res.render("user/create")
@@ -24,11 +38,11 @@ const loginView = (req, res) => {
 const authenticate = async (req, res, next) => {
 	//need validate user
 	try {
+		console.log("Authenticate: ", req.body)
 		let user = await User.findOne({username: req.body.username})
 		if (user === null) {
 			console.log("Error: User does not exist")
-			res.send("User does not exist")
-			return
+			throw new Error("User does not exist")
 		}
 		let passwordMatch = await user.passwordComparison(req.body.password)
 		if (passwordMatch) {
@@ -36,12 +50,19 @@ const authenticate = async (req, res, next) => {
 			res.locals.user = user
 			next()
 		} else {
-			res.send("Wrong password")
+			throw new Error("Wrong password")
 		}
 	} catch(error) {
 		console.log("Authenticate Error: ", error.message)
+		next(error.message)
 	}
-	res.send("login successfully")
+}
+
+const respondJSON = (req, res) => {
+		res.json({
+			status: 200,
+			data: res.locals
+		})
 }
 
 const show = (req, res, next) => {
@@ -163,8 +184,17 @@ const validate = (req, res, next) => {
 		}
 }
 
+const errorJSON = (error, req, res, next) => {
+	let errorObject = {
+		status: 501,
+		message: ""
+	}
+	errorObject.message = error ? error.message : "Unknown Error"
+	res.json(errorObject)
+}
 module.exports = {
 	getAllUser,
+	getAdmins,
 	validate,
 	authenticate,
 	create,
@@ -176,4 +206,5 @@ module.exports = {
 	showView,
 	updateView,
 	redirectView,
+	respondJSON,
 }
