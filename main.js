@@ -31,6 +31,8 @@ router.get("/user/:id/update", userController.show, userController.updateView)
 
 router.get("/community/create", communityController.createView)
 router.get("/event/create", eventController.createView)
+router.get("/event/:id", eventController.show, eventController.showView)
+router.get("/event/:id/update", eventController.show, eventController.updateView)
 //post
 router.post("/user/login", userController.login)
 router.post("/user/create", userController.create)
@@ -38,6 +40,8 @@ router.put("/user/:id/update", userController.update, userController.redirectVie
 
 router.post("/community/create", communityController.create)
 router.post("/event/create", eventController.create)
+router.put("/event/:id/update", eventController.update, eventController.redirectView)
+
 //middleware
 app.use(errorController.notFoundError)
 app.use(errorController.internalServerError)

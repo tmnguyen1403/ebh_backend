@@ -43,6 +43,10 @@ const show = (req, res, next) => {
 const showView = (req, res) => {
 	res.render("user/show")
 }
+/*
+input: Date object
+return: yyyy-mm-dd String
+*/
 
 const update = async (req, res, next) => {
 		let userId = req.params.id

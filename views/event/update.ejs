@@ -1,0 +1,34 @@
+<h1>Update Event</h1>
+<form
+action="<%= `/event/${event._id}/update?_method=PUT` %>"
+method="POST">
+	<label for="name">Name</label>
+	<input type="text" name="name" id="name"
+	value="<%= event.name%>">
+	<br>
+	<label for="location">Location</label>
+	<input type="text" name="location" id="location"
+	value="<%= event.location%>">
+	<br>
+	<label for="description">Description</label>
+	<input type="text" name="description" id="description"
+	value="<%= event.description%>">
+
+	<br>
+	<label for="date">Start Date</label>
+	<input type="date" name="date" id="date"
+	value="<%=event.date%>">
+	<%console.log(event.date) %>
+	<br>
+	<label for="start">Start Time</label>
+	<input type="text" name="start" id="start"
+	value="<%= event.start%>">
+	<br>
+	<label for="end">End Time</label>
+	<input type="text" name="end" id="end"
+	value="<%= event.end%>">
+	<br>
+
+
+	<input type="submit" name="submit" value="Update">
+</form>
