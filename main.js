@@ -8,6 +8,20 @@ const methodOverride = require("method-override")
 router.use(methodOverride("_method", {
 	methods: ["POST", "GET"]
 }))
+//cookie
+const expressSession = require("express-session"),
+cookieParser = require("cookie-parser"),
+connectFlash = require("connect-flash")
+router.use(cookieParser("secret_passcode"))
+router.use(expressSession({
+	secret: "secret_passcode",
+	cookie: {
+		maxAge: 4000000
+	},
+	reqsave: false,
+	saveUninitialized: false,
+}))
+router.use(connectFlash())
 //controller
 const userController = require("./controllers/user")
 const communityController = require("./controllers/community")
@@ -34,7 +48,7 @@ router.get("/event/create", eventController.createView)
 router.get("/event/:id", eventController.show, eventController.showView)
 router.get("/event/:id/update", eventController.show, eventController.updateView)
 //post
-router.post("/user/login", userController.login)
+router.post("/user/login", userController.authenticate, userController.redirectView)
 router.post("/user/create", userController.create)
 router.put("/user/:id/update", userController.update, userController.redirectView)
 router.delete("/user/:id/delete", userController.deleteA)

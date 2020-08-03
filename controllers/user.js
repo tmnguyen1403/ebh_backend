@@ -21,14 +21,31 @@ const loginView = (req, res) => {
 }
 
 
-const login = (req, res) => {
+const authenticate = async (req, res, next) => {
 	//need validate user
+	try {
+		let user = await User.findOne({username: req.body.username})
+		if (user === null) {
+			console.log("Error: User does not exist")
+			res.send("User does not exist")
+			return
+		}
+		if (user.password === req.body.password) {
+			res.locals.redirect = `/user/${user._id}`
+			res.locals.user = user
+			next()
+		} else {
+			res.send("Wrong password")
+		}
+	} catch(error) {
+		console.log("Authenticate Error: ", error.message)
+	}
 	res.send("login successfully")
 }
 
 const show = (req, res, next) => {
 	let userId = req.params.id
-
+	console.log("Show User")
 	User.findById(userId).populate('communities')
 		.then(user => {
 			res.locals.user = user
@@ -41,6 +58,7 @@ const show = (req, res, next) => {
 }
 
 const showView = (req, res) => {
+	console.log("ShowView User")
 	res.render("user/show")
 }
 /*
@@ -52,6 +70,7 @@ const update = async (req, res, next) => {
 		let userId = req.params.id
 		let userParams = {
 			username: req.body.username,
+			email: req.body.email,
 			password: req.body.password,
 			coordinator: req.body.coordinator,
 			phone: req.body.phone,
@@ -88,6 +107,7 @@ const redirectView = (req, res, next) => {
 const create = async (req, res) => {
 	const data = {
 		username: req.body.username,
+		email: req.body.email,
 		password: req.body.password,
 		coordinator: req.body.coordinator,
 		phone: req.body.phone,
@@ -122,7 +142,7 @@ const deleteA = (req, res, next) => {
 
 module.exports = {
 	getAllUser,
-	login,
+	authenticate,
 	create,
 	show,
 	update,

@@ -7,6 +7,12 @@ const userSchema = mongoose.Schema({
 		unique: true,
 		lowercase: true,
 	},
+	email: {
+		type: String,
+		required: true,
+		unique: true,
+		lowercase: true,
+	},
 	password: {
 		type: String,
 		require: true,
@@ -27,7 +33,7 @@ const userSchema = mongoose.Schema({
 	},
 	communities: [{type: ObjectId, ref: "Community"}],
 	events: [{type: ObjectId, ref: "Event"}],
-	flyers: [{type: ObjectId, ref: "Flyer"}], 
+	flyers: [{type: ObjectId, ref: "Flyer"}],
 })
 
 module.exports = mongoose.model("User", userSchema)
