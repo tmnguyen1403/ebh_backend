@@ -28,7 +28,7 @@ const login = (req, res) => {
 
 const show = (req, res, next) => {
 	let userId = req.params.id
-	console.log("User id", userId)
+
 	User.findById(userId).populate('communities')
 		.then(user => {
 			res.locals.user = user
@@ -41,8 +41,44 @@ const show = (req, res, next) => {
 }
 
 const showView = (req, res) => {
-	console.log("Show view", res.locals.user)
 	res.render("user/show")
+}
+
+const update = async (req, res, next) => {
+		let userId = req.params.id
+		let userParams = {
+			username: req.body.username,
+			password: req.body.password,
+			coordinator: req.body.coordinator,
+			phone: req.body.phone,
+			communities: [],
+			admin: req.body.admin,
+		}
+
+		try {
+			const communities = await Community.find({name: {$in: req.body.communities}})
+			userParams.communities = communities
+			let user = await User.findByIdAndUpdate(userId,
+				{$set: userParams})
+			res.locals.redirect = `/user/${userId}`
+			res.locals.user = user
+			next()
+		} catch(error) {
+			console.log("ERROR UPDATE USER :", error.message)
+			res.render("501")
+		}
+}
+
+const updateView = (req, res) => {
+	res.render("user/update")
+}
+
+const redirectView = (req, res, next) => {
+	let redirectPath = res.locals.redirect
+	if (redirectPath)
+		res.redirect(redirectPath)
+	else
+		next()
 }
 
 const create = async (req, res) => {
@@ -69,10 +105,13 @@ const create = async (req, res) => {
 
 module.exports = {
 	getAllUser,
-	createView,
-	loginView,
 	login,
 	create,
 	show,
+	update,
+	createView,
+	loginView,
 	showView,
+	updateView,
+	redirectView,
 }

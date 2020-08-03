@@ -13,6 +13,11 @@
 		<td><%= user.coordinator %></td>
 	</tr>
 	<tr>
+		<th>User Type</th>
+		<%const user_types =["Normal User", "Coordinator", "Manager"] %>
+		<td><%= user_types[user.admin] %></td>
+	</tr>
+	<tr>
 		<th>Communities</th>
 		<% user.communities.forEach( c => { %>
 			<td> <%= c.name %> |</td>

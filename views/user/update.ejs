@@ -1,0 +1,40 @@
+<h1>Update User Info</h1>
+<form class=""
+	action="<%= `/user/${user._id}/update?_method=PUT` %>"
+	method="POST">
+	<label for="username">UserName</label>
+	<input type="text" name="username" value="<%= user.username %>">
+	<br>
+	<label for="password">Password</label>
+	<input type="password" name="password" value="<%= user.password %>">
+	<br>
+	<label for="coordinator">Coordinator</label>
+	<input type="text" name="coordinator" value="<%= user.coordinator %>">
+	<br>
+	<label for="phone">Phone</label>
+	<input type="text" name="phone" value="<%= user.phone %>">
+	<br>
+	<fieldset>
+		<%let checked_communities = user.communities.map(c => c.name) %>
+		<% function getChecked(value) {return checked_communities.includes(value) ? "checked" : ""}%>
+		<p>Choose Communities</p>
+		<% let communities = ["conroe", "cypress", "houston"] %>
+		<% communities.forEach(c => { %>
+			<input type="checkbox" name="communities" value=<%= c %> id=<%= c %>
+			<%= getChecked(c) %>>
+			<label for=<%= c %>><%= c %></label>
+			<br>
+		<% })%>
+	</fieldset>
+	<fieldset>
+		<% function getSelected(value) {return user.admin === value ? "selected" : ""}%>
+		<label for="admin">User Type</label>
+		<select name="admin">
+
+			<option value="0" <%= getSelected(0) %>>Normal User</option>
+			<option value="1" <%= getSelected(1) %>>Coordinator</option>
+			<option value="2" <%= getSelected(2) %>>Manager</option>
+		</select>
+	</fieldset>
+	<input type="submit" name="Submit" value="Update">
+</form>

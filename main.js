@@ -27,11 +27,15 @@ router.get("/", (req, res) => {
 router.get("/user/login", userController.loginView)
 router.get("/user/create", userController.createView)
 router.get("/user/:id", userController.show, userController.showView)
+router.get("/user/:id/update", userController.show, userController.updateView)
+
 router.get("/community/create", communityController.createView)
 router.get("/event/create", eventController.createView)
 //post
 router.post("/user/login", userController.login)
 router.post("/user/create", userController.create)
+router.put("/user/:id/update", userController.update, userController.redirectView)
+
 router.post("/community/create", communityController.create)
 router.post("/event/create", eventController.create)
 //middleware
