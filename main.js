@@ -1,6 +1,6 @@
 const express = require("express"),
 app = express(),
-router = express.Router(),
+router = require("./routes/index"),
 db = require("./db_connect");
 db.connect()
 //middlwares
@@ -24,46 +24,20 @@ router.use(expressSession({
 	saveUninitialized: false,
 }))
 router.use(connectFlash())
-//controller
-const userController = require("./controllers/user")
-const communityController = require("./controllers/community")
-const errorController = require("./controllers/error")
-const eventController = require("./controllers/event")
+
 //port
 app.set("port", process.env.PORT || 3000)
 app.set("view engine", "ejs")
 //middleware
 //Note: order matters
+
+app.use(express.urlencoded({extended: false}))
+app.use(express.json())
 app.use("/", router)
-router.use(express.urlencoded({extended: false}))
-router.use(express.json())
 //routes
 
-
-router.get("/", (req, res) => {
-	res.send("Welcome to Education Base Housing")
-})
-router.get("/user/login", userController.loginView)
-router.get("/user/create", userController.createView)
-router.get("/user/:id", userController.show, userController.showView)
-router.get("/user/:id/update", userController.show, userController.updateView)
-
-router.get("/community/create", communityController.createView)
-router.get("/event/create", eventController.createView)
-router.get("/event/:id", eventController.show, eventController.showView)
-router.get("/event/:id/update", eventController.show, eventController.updateView)
-//post
-router.post("/user/login", userController.authenticate, userController.redirectView)
-router.post("/user/create", userController.validate ,userController.create)
-router.put("/user/:id/update", userController.update, userController.redirectView)
-router.delete("/user/:id/delete", userController.deleteA)
-
-router.post("/community/create", communityController.create)
-router.post("/event/create", eventController.create)
-router.put("/event/:id/update", eventController.update, eventController.redirectView)
-router.delete("/event/:id/delete", eventController.deleteA)
-
 //middleware
+const errorController = require("./controllers/error")
 app.use(errorController.notFoundError)
 app.use(errorController.internalServerError)
 app.listen(app.get("port"), () => {
