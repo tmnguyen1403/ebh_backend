@@ -91,6 +91,19 @@ const show = async (req, res, next) => {
 	}
 }
 
+const deleteA = (req, res, next) => {
+	let eventId = req.params.id
+	Event.findByIdAndRemove(eventId)
+		.then(() => {
+			console.log("EVENT REMOVE: OK")
+			res.send("EVENT REMOVE: OK")
+			next()
+		})
+		.catch(error => {
+			console.log("EVENT REMOVE ERROR: ", error.message)
+			res.render("501")
+		})
+}
 //VIEWS
 const showView = (req, res) => {
 	res.render("event/show")
@@ -113,7 +126,8 @@ module.exports = {
 	create,
 	show,
 	update,
+	deleteA,
 	showView,
 	redirectView,
-	updateView
+	updateView,
 }

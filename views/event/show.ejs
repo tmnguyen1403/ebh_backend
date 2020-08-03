@@ -20,4 +20,5 @@
 		<th>Time:</th>
 		<td><%= event.start %> : <%= event.end %></td>
 	</tr>
+	<a href="<%= `/event/${event._id}/delete?_method=DELETE` %>">Delete</a>
 </table>
