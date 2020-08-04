@@ -17,7 +17,7 @@ const create = async (req, res) => {
 		creator: null,
 	}
 	try {
-		const creator = await User.findOne({username: body.creator})
+		const creator = res.locals.creator
 		if (creator === null) throw new Error("Cannot find creator")
 		data.creator = creator._id
 		const record = await Event.create(data)

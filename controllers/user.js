@@ -43,7 +43,8 @@ const authenticate = async (req, res, next) => {
 	//need validate user
 	try {
 		console.log("Authenticate: ", req.url)
-		let user = await User.findOne({username: req.body.username}).populate("communities")
+		let user = await User.findOne({username: req.body.username})
+			.populate("communities")
 		if (user === null) {
 			console.log("Error: User does not exist")
 			throw new Error("User does not exist")
@@ -58,7 +59,7 @@ const authenticate = async (req, res, next) => {
 		}
 	} catch(error) {
 		console.log("Authenticate Error: ", error.message)
-		next(error.message)
+		next(error)
 	}
 }
 
@@ -77,13 +78,25 @@ const apiAuthenticate = (req, res, next) => {
 			success: true,
 			token: signedToken,
 			user: user,
+			communities: Object.values(user.communities)
+				.map(community => community.name),
 		})
 	} else {
 		res.json({
 			success: false,
-			message: "Could not authenticate user",
+			error: "Could not authenticate user",
 		})
 	}
+}
+
+const apiLoginError = (error, req, res, next) => {
+	if (error)
+		res.json({
+			success: false,
+			error: error.message,
+		})
+	else
+		next()
 }
 
 const respondJSON = (req, res) => {
@@ -201,6 +214,7 @@ const verifyJWT = (req, res, next) => {
 				if (payload) {
 					User.findById(payload.data).then(user => {
 						if (user) {
+							res.locals.creator = user
 							next ()
 						} else {
 							res.status(400).json({
@@ -260,6 +274,7 @@ module.exports = {
 	validate,
 	authenticate,
 	apiAuthenticate,
+	apiLoginError,
 	verifyJWT,
 	create,
 	show,
