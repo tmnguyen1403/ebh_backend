@@ -14,19 +14,21 @@ const create = async (req, res) => {
 		date: body.date,
 		start: body.start,
 		end: body.end,
-		creator: null,
+		creator: body.creator,
+		community: body.communityId,
 	}
 	try {
-		const creator = res.locals.creator
-		if (creator === null) throw new Error("Cannot find creator")
-		data.creator = creator._id
+		if (!body.creator) {
+			const creator = res.locals.creator
+			if (creator === null) throw new Error("Cannot find creator")
+			data.creator = creator._id
+		}
 		const record = await Event.create(data)
 		console.log("Create new event successfully: ", record)
 		//add event to the creator record
-		creator.events.push(record._id)
+	/*	creator.events.push(record._id)
 		const result = await creator.save()
-		console.log("Save new event to creator successfully: ", result)
-		//res.send("Create new event successfully")
+		console.log("Save new event to creator successfully: ", result)*/
 		res.json({
 			success: true,
 			event: record,
@@ -129,7 +131,26 @@ const redirectView = (req, res, next) => {
 		next()
 }
 
+const getByCommunity = async (req, res) => {
+	let communityId = req.headers.communityid
+	console.log("communityId", communityId)
+	try {
+		let events = await Event.find({community: communityId})
+		res.json({
+			success: true,
+			events: events
+		})
+	} catch(error) {
+		console.log("GET EVETN ERROR: ", error.message)
+		res.json({
+			success: false,
+			error: error.message,
+		})
+	}
+}
+
 module.exports = {
+	getByCommunity,
 	createView,
 	create,
 	show,

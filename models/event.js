@@ -24,6 +24,7 @@ const eventSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	creator: {type: mongoose.Schema.Types.ObjectId, ref: "User"}
+	creator: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
+	community: {type: mongoose.Schema.Types.ObjectId, ref: "Community"},
 })
 module.exports = mongoose.model("Event", eventSchema)

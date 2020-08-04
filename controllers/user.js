@@ -79,7 +79,10 @@ const apiAuthenticate = (req, res, next) => {
 			token: signedToken,
 			user: user,
 			communities: Object.values(user.communities)
-				.map(community => community.name),
+				.map(community => {
+					const {_id, name} = community
+					return {_id, name}
+				})
 		})
 	} else {
 		res.json({

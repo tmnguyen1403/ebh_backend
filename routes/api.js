@@ -6,5 +6,6 @@ router.post("/user/login", userController.authenticate,
 userController.apiAuthenticate, userController.apiLoginError)
 router.use(userController.verifyJWT)
 router.post("/user/create", userController.create)
+router.get("/event/get", eventController.getByCommunity)
 router.post("/event/create", eventController.create)
 module.exports = router

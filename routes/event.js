@@ -1,6 +1,7 @@
 const router = require("express").Router(),
 eventController = require("../controllers/event")
 
+router.get("/get", eventController.getByCommunity)
 router.get("/create", eventController.createView)
 router.post("/create", eventController.create)
 router.get("/:id", eventController.show, eventController.showView)
