@@ -7,6 +7,7 @@ const createView = (req, res) => {
 
 const create = async (req, res) => {
 	const body = req.body
+	console.log("create event", body)
 	const data = {
 		name: body.name,
 		location: body.location,
@@ -15,7 +16,7 @@ const create = async (req, res) => {
 		start: body.start,
 		end: body.end,
 		creator: body.creator,
-		community: body.communityId,
+		community: body.communityid,
 	}
 	try {
 		if (!body.creator) {
