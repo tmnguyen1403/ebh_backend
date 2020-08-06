@@ -1,8 +1,28 @@
 const Flyer = require("../models/flyer")
 const formidable = require("formidable")
 
-const get = (req, res) => {
-
+const getByCommunity = async (req, res) => {
+	const communityid = req.headers.communityid
+	try
+	{
+		const flyers = await Flyer.find({community: communityid})
+		if (flyers && flyers.length > 0) {
+			console.log("getFlyers ", flyers)
+			res.json({
+				success: true,
+				flyers: flyers
+			})
+		}
+		else {
+			throw new Error(`No flyer in community: ${communityid}`)
+		}
+	} catch(error){
+		console.log("Error get flyer", error.message)
+		res.json({
+			success: false,
+			error: error.message
+		})
+	}
 }
 
 const createView = (req, res) => {
@@ -50,7 +70,7 @@ const create = (req, res) => {
 }
 
 module.exports = {
-	get,
+	getByCommunity,
 	create,
 	createView,
 }
