@@ -30,8 +30,17 @@ const getAdmins = async(req, res) => {
 	}
 }
 
-const createView = (req, res) => {
-	res.render("user/create")
+const createView = async (req, res) => {
+	try{
+	const communities = await Community.find({}).select({name: 1})
+	console.log("createView ", communities)
+	res.render("user/create", {communities})
+	} catch (error) {
+		res.json({
+			status: false,
+			error: error.message
+		})
+}
 }
 
 const loginView = (req, res) => {
@@ -145,11 +154,13 @@ const update = async (req, res, next) => {
 		}
 
 		try {
-			const communities = await Community.find({name: {$in: req.body.communities}})
-			userParams.communities = communities
+			const userCommunities = await Community.find({name: {$in: req.body.communities}})
+			userParams.communities = userCommunities
+
 			let user = await User.findByIdAndUpdate(userId,
 				{$set: userParams})
-			user.communities = communities
+
+			user.communities = userCommunities
 			res.locals.user = user
 			next()
 		} catch(error) {
@@ -158,7 +169,10 @@ const update = async (req, res, next) => {
 		}
 }
 
-const updateView = (req, res) => {
+const updateView = async (req, res) => {
+	const communities = await Community.find({}).select({name: 1})
+	res.locals.communities = communities
+
 	res.render("user/update")
 }
 
@@ -171,18 +185,19 @@ const redirectView = (req, res, next) => {
 }
 
 const create = async (req, res) => {
+	const body = req.body
 	const data = {
-		username: req.body.username,
-		email: req.body.email,
-		password: req.body.password,
-		coordinator: req.body.coordinator,
-		phone: req.body.phone,
+		username: body.username,
+		email: body.email,
+		password: body.password,
+		coordinator: body.coordinator,
+		phone: body.phone,
 		communities: [],
-		admin: req.body.admin,
+		admin: body.admin,
 	}
 
 	try {
-		const communities = await Community.find({name: {$in: req.body.communities}})
+		const communities = await Community.find({name: {$in: body.communities}})
 		data.communities = communities
 		const new_user = await User.create(data)
 		console.log("new user:", new_user)

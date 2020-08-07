@@ -16,10 +16,9 @@
 	<br>
 	<fieldset>
 		<p>Choose Communities</p>
-		<% let communities = ["conroe", "cypress", "houston"] %>
 		<% communities.forEach(c => { %>
-			<input type="checkbox" name="communities" value=<%= c %> id=<%= c %>>
-			<label for=<%= c %>><%= c %></label>
+			<input type="checkbox" name="communities" value="<%= c.name %>" id="<%= c._id %>">
+			<label for=<%= c.name %>><%= c.name %></label>
 			<br>
 		<% })%>
 	</fieldset>
