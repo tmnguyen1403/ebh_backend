@@ -2,8 +2,8 @@ module.exports.connect = () => {
 	const mongoose = require("mongoose"),
 	dbURL = "mongodb://localhost:27017/",
 	dbName = "education_base_housing";
-
-	mongoose.connect(dbURL + dbName,
+	db = process.env.MONGODB_URI || dbURL + dbName
+	mongoose.connect(db,
 		{useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
 		(error, result) =>
 		{
