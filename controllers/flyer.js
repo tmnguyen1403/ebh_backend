@@ -2,9 +2,11 @@ const Flyer = require("../models/flyer")
 const formidable = require("formidable")
 const util = require('util')
 /*------------------utils function--------------------*/
-const getFileName = (fpath) => {
-	if (fpath)
+const getFileName = (file) => {
+	if (file && file.path) {
+		const fpath = file.path
 		return fpath.substr(fpath.lastIndexOf("/")+1)
+	}
 	return null
 }
 
@@ -19,21 +21,21 @@ const getFlyerParams = async (req) => {
 				if (error)
 					return reject(error)
 				const { title, communityid } = fields
-				const background = getFileName(files.background.path)
-				const flyer1 = getFileName(files.flyer1.path)
-				const flyer2 = getFileName(files.flyer2.path)
+				const background = getFileName(files.background)
+				const flyer1 = getFileName(files.flyer1)
+				const flyer2 = getFileName(files.flyer2)
 				console.log(background)
 				if (background === null)
 					return reject (new
 						Error("Please provide background image for flyer"))
-
-				resolve ({
-					title,
-					background,
-					flyer1,
-					flyer2,
-					community: communityid,
-				})
+				let params = {title, background}
+				if (flyer1)
+					params['flyer1'] = flyer1
+				if (flyer2)
+					params['flyer2'] = flyer2
+				if (communityid)
+					params['community'] = communityid
+				resolve (params)
 				})
 		})
 	}
