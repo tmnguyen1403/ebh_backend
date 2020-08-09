@@ -9,6 +9,16 @@ const flyerSchema = mongoose.Schema({
 		type: String,
 		require: true,
 	},
+	background: {
+		type: String,
+		require: true,
+	},
+	flyer1: {
+		type: String,
+	},
+	flyer2: {
+		type: String,
+	},
 	community: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Community",

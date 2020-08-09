@@ -7,7 +7,7 @@ router.post("/user/login", userController.authenticate,
 	userController.apiAuthenticate, userController.apiLoginError)
 
 /*Check Token all routes below*/
-router.use(userController.verifyJWT)
+//router.use(userController.verifyJWT)
 /*-------User------*/
 router.post("/user/create", userController.create)
 /*-------Event------*/
@@ -16,5 +16,6 @@ router.post("/event/create", eventController.create)
 /*-------Flyer------*/
 router.get("/flyer/get", flyerController.getByCommunity)
 router.get("/flyer/create", flyerController.createView)
+router.get("/flyer/:id", flyerController.getByCommunity)
 router.post("/flyer/create", flyerController.create)
 module.exports = router

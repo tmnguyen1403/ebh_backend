@@ -2,7 +2,7 @@ const Flyer = require("../models/flyer")
 const formidable = require("formidable")
 
 const getByCommunity = async (req, res) => {
-	const communityid = req.headers.communityid
+	const communityid = req.params.id || req.headers.communityid
 	try
 	{
 		const flyers = await Flyer.find({community: communityid})
@@ -29,12 +29,17 @@ const createView = (req, res) => {
 	res.render("flyer/create")
 }
 
+const getFileName = (fpath) => {
+	if (fpath)
+		return fpath.substr(fpath.lastIndexOf("/")+1)
+	return null
+}
 const create = (req, res) => {
 		console.log("Create Flyer")
 	const form = new formidable.IncomingForm();
 	form.uploadDir = process.cwd() + '/public/uploads'
 	form.keepExtensions = true
-	form.parse(req, async (error, fields, file) => {
+	form.parse(req, async (error, fields, files) => {
 		if (error) {
 			console.log("Error creating flyer")
 			res.json({
@@ -43,20 +48,31 @@ const create = (req, res) => {
 			})
 		}
 		else {
-
 			const { title, communityid } = fields
-			const fpath = file.flyer.path
-			const imageName = fpath.substr(fpath.lastIndexOf("/")+1)
+			const background = getFileName(files.background.path)
+			const flyer1 = getFileName(files.flyer1.path)
+			const flyer2 = getFileName(files.flyer2.path)
+			console.log(background)
+			if (background === null) {
+				res.json({
+					success: false,
+					error: "Please provide background image for flyer"
+				})
+				return;
+			}
 			const data = {
 				title,
-				imageName,
+				background,
+				flyer1,
+				flyer2,
 				community: communityid
 			}
 			try {
 				const record = await Flyer.create(data)
 				console.log("Creating flyer successfully. Record", record)
 				res.json({
-					success: true
+					success: true,
+					message: "Flyer is created"
 				})
 			} catch (error) {
 				console.log("Error creating new flyer", error.message)
