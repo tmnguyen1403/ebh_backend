@@ -1,7 +1,8 @@
 const router = require("express").Router(),
 userController = require("../controllers/user"),
 eventController = require("../controllers/event"),
-flyerController = require("../controllers/flyer");
+flyerController = require("../controllers/flyer"),
+errorController = require("../controllers/error");
 
 router.post("/user/login", userController.authenticate,
 	userController.apiAuthenticate, userController.apiLoginError)
@@ -14,8 +15,14 @@ router.post("/user/create", userController.create)
 router.get("/event/get", eventController.getByCommunity)
 router.post("/event/create", eventController.create)
 /*-------Flyer------*/
-router.get("/flyer/get", flyerController.getByCommunity)
+router.get("/flyer/get", flyerController.getByCommunityId)
 router.get("/flyer/create", flyerController.createView)
-router.get("/flyer/:id", flyerController.getByCommunity)
+router.get("/flyer/community/:id", flyerController.getByCommunityId)
+
+router.get("/flyer/:id", flyerController.getById)
+router.get("/flyer/:id/update", flyerController.updateView)
 router.post("/flyer/create", flyerController.create)
+router.put("/flyer/:id/update", flyerController.update)
+
+router.use(errorController.apiError)
 module.exports = router

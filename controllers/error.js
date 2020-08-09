@@ -9,7 +9,15 @@ const internalServerError = (error, req, res, next) => {
 	next()
 }
 
+const apiError = (error, req, res, next) => {
+	console.log("Server Error ", error.message)
+	res.json({
+		success: false,
+		error: error.message
+	})
+}
 module.exports = {
 	notFoundError,
 	internalServerError,
+	apiError,
 }

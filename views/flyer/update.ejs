@@ -1,0 +1,15 @@
+<h1>Update Flyer</h1>
+<form class=""
+	action="<%= `/api/flyer/${flyer._id}/update?_method=PUT` %>"
+	method="post"
+	enctype="multipart/form-data">
+	<input type="file" name="background" value="">
+	<input type="file" name="flyer1" value="">
+	<input type="file" name="flyer2" value="">
+	<label for="title">TestFlyer</label>
+	<input type="text" name="title" value="Title" id="title">
+	<label for="communityid">CommunityId</label>
+	<input type="text" name="communityid"
+	value="5f263e14fc876d193c144d15" id="communityid">
+	<input type="submit" name="Submit" value="Submit">
+</form>
