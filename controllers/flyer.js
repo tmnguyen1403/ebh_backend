@@ -11,11 +11,20 @@ const getFileName = (file) => {
 	}
 	return null
 }
-const deleteFile = (path) => {
-	fs.unlink(path, (error) => {
-		if (error) throw error
-		console.log(`${path} was deleted`)
-	})
+const deleteFile = (file) => {
+	fs.access(file, fs.constants.F_OK | fs.constants.W_OK, (err) => {
+	  if (err) {
+	    console.error(
+	      `${file} ${err.code === 'ENOENT' ? 'does not exist' : 'is read-only'}`);
+	  } else {
+	    console.log(`${file} exists, and it is writable`);
+			fs.unlink(file, (error) => {
+				if (error)
+					console.error(`delete ${file} cause error ${error.code}`)
+				console.log(`${file} was deleted`)
+			})
+	  }
+	});
 }
 
 const isDefine = (a) => {
@@ -105,11 +114,11 @@ const getById = async (req, res, next) => {
 	try
 	{
 		const flyer = await Flyer.findById(flyerid)
-		if (flyer) {
-			console.log("getFlyers ", flyer)
+		if (flyer && flyer !== undefined) {
+			console.log("getFlyer ", flyer)
 			res.json({
 				success: true,
-				flyer: flyer
+				flyer: JSON.stringify(flyer)
 			})
 		}
 		else {
@@ -133,6 +142,7 @@ const update = async (req, res, next) => {
 			res.json({
 					success: true,
 					message: "Flyer is updated",
+					flyer: flyer
 			})
 		} catch (error) {
 			next (error)
@@ -140,6 +150,19 @@ const update = async (req, res, next) => {
 	}
 }
 
+const deleteOne = async (req, res, next) => {
+	const flyerId = req.params.id || req.headers.flyerid
+	if (flyerId === null)
+		next(new Error(`Please provide flyerId`))
+	try {
+		const result = await Flyer.deleteOne({_id: flyerId})
+		if (isDefine(result))
+			console.log("Delete Flyer successfully")
+	} catch(error) {
+		console.warn("Error delete flyer ", error.message)
+		next(error)
+	}
+}
 const createView = (req, res) => {
 	res.render("flyer/create")
 }
@@ -150,8 +173,8 @@ const create = async (req, res, next) => {
 		const flyerParams = await getFlyerParams(req)
 		console.log("FlyerPrams ", flyerParams)
 		if (flyerParams["background"] === null)
-			return reject (new
-				Error("Please provide background image for flyer"))
+			throw new
+				Error("Please provide background image for flyer")
 		const record = await Flyer.create(flyerParams)
 		console.log("Creating flyer successfully. Record", record)
 		res.json({
@@ -179,4 +202,5 @@ module.exports = {
 	createView,
 	update,
 	updateView,
+	deleteOne,
 }
