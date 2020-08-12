@@ -27,7 +27,7 @@ const deleteFile = (file) => {
 	});
 }
 
-const isDefine = (a) => {
+const isDefined = (a) => {
 	return (a && a!== undefined && a.length > 0)
 }
 
@@ -46,7 +46,7 @@ const getFlyerParams = async (req) => {
 				//console.log("ParsePromise ", fields.deleteFiles)
 				/*Remove Old Data*/
 				let dFiles = fields.deleteFiles
-				if (isDefine(dFiles)) {
+				if (isDefined(dFiles)) {
 					dFiles = dFiles.split(";")
 						.filter(value => value.length > 0)
 					let fnames = dFiles.map(file => file.substr(file.lastIndexOf("/")+ 1))
@@ -137,12 +137,12 @@ const update = async (req, res, next) => {
 		try {
 			const flyerParams = await getFlyerParams(req)
 			let flyer = await Flyer.findByIdAndUpdate(flyerId,
-				{$set: flyerParams})
+				{$set: flyerParams}, {new: true})
 			console.log("Update flyer successfully. Record", flyer)
 			res.json({
 					success: true,
 					message: "Flyer is updated",
-					flyer: flyer
+					flyer: flyer,
 			})
 		} catch (error) {
 			next (error)
@@ -156,7 +156,7 @@ const deleteOne = async (req, res, next) => {
 		next(new Error(`Please provide flyerId`))
 	try {
 		const result = await Flyer.deleteOne({_id: flyerId})
-		if (isDefine(result))
+		if (isDefined(result))
 			console.log("Delete Flyer successfully")
 	} catch(error) {
 		console.warn("Error delete flyer ", error.message)
